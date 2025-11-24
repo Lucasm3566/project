@@ -285,3 +285,7 @@ Utiliser une IA pour coder est extrêmement puissant, mais comporte des risques 
 - maturité dans l’usage des prompts.
 
 L’IA doit être un accélérateur, pas un remplaçant du jugement humain.
+
+---
+# Sources :
+ChatGPT
