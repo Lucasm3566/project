@@ -1,85 +1,114 @@
-L'utilisation de l'intelligence artificielle (IA) pour le codage (via des outils comme GitHub Copilot, ChatGPT, Tabnine, etc.) est une révolution en termes de productivité, mais elle introduit des risques complexes et nouveaux qui doivent être activement gérés.
+# Risques d'utiliser une IA pour coder
 
-Voici une ventilation affinée de ces risques :
+## 1. Vulnérabilités de sécurité
 
-## 1. Failles de Sécurité : L'IA comme "Stagiaire" Non Sécurisé
-C'est le risque le plus immédiat. L'IA est entraînée sur des milliards de lignes de code public, y compris du code **mauvais, obsolète et vulnérable**.
+### Taux élevé de failles de sécurité
 
-* **Apprentissage de "Bad Patterns" :** L'IA ne fait pas la différence entre un bon et un mauvais exemple. Elle peut reproduire des vulnérabilités classiques (Injections SQL, XSS, gestion de sessions défaillante) parce qu'elle les a vues des milliers de fois dans des dépôts publics non sécurisés.
-* **Code Obsolète :** L'IA peut suggérer d'utiliser des bibliothèques ou des fonctions cryptographiques obsolètes (ex: `MD5` pour du hachage de mot de passe) car son corpus d'entraînement est vaste et contient du code datant de plusieurs années.
-* **Manque de Contexte Global :** L'IA suggère du code *localement*, sans comprendre l'architecture globale de votre application. Elle peut suggérer un extrait de code qui semble correct en isolation, mais qui, une fois intégré, contourne une couche de sécurité ou expose une variable sensible.
-* **"Hallucinations" de Dépendances :** L'IA peut "inventer" le nom d'une bibliothèque qui semble plausible mais n'existe pas. Si un acteur malveillant détecte cela, il peut publier un paquet malveillant sous ce nom (attaque par *typosquatting*). Le développeur, faisant confiance à l'IA, l'installe et infecte le projet.
+Dans 45% des cas testés, les modèles de langage (LLM) ont introduit des vulnérabilités classées dans le Top 10 de l'OWASP, selon une étude de Veracode. Java présente le plus grand risque avec un taux d'échec de sécurité supérieur à 70%, tandis que Python, C# et JavaScript affichent des taux d'échec entre 38% et 45%.
 
+**Source:** [EC News - Le code généré par l'IA présente des risques pour la sécurité](https://www.ecinews.fr/fr/le-code-genere-par-lia-presente-des-risques-pour-la-securite/)
 
+### Types de vulnérabilités fréquentes
+
+Les LLM échouent à sécuriser le code contre les scripts intersites (CWE-80) dans 86% des cas et contre l'injection de logs (CWE-117) dans 88% des cas. Les injections SQL et attaques similaires deviennent plus faciles avec les vulnérabilités du code généré par l'IA.
+
+**Sources:** 
+- [EC News](https://www.ecinews.fr/fr/le-code-genere-par-lia-presente-des-risques-pour-la-securite/)
+- [Kaspersky - Risques liés à la sécurité du vibe coding](https://www.kaspersky.fr/blog/vibe-coding-2025-risks/23307/)
+
+### Faux sentiment de sécurité
+
+Une étude de Stanford révèle que dans 4 tâches sur 5, les participants assistés par l'IA ont écrit du code moins sécurisé que ceux sans IA, représentant une augmentation de 80%. Ce phénomène s'explique par un excès de confiance dans le système, amenant les développeurs à négliger la vérification du code.
+
+**Source:** [Louis-François Bouchard - Les Risques de Coder avec l'IA Générative](https://www.louisbouchard.ca/blog-ia/risques-coder-ia)
+
+## 2. Risques liés à la chaîne d'approvisionnement
+
+### Composants non vérifiés
+
+L'utilisation de bibliothèques, outils et modèles pré-entraînés non vérifiés peut introduire des vulnérabilités ou des portes dérobées (backdoors). Une vigilance particulière doit être portée aux composants n'ayant pas fait l'objet d'une évaluation de sécurité approfondie.
+
+**Sources:**
+- [CNIL - Garantir la sécurité du développement d'un système d'IA](https://www.cnil.fr/fr/ia-garantir-la-securite-du-developpement)
+- [ANSSI - Recommandations de sécurité pour un système d'IA générative](https://cyber.gouv.fr/sites/default/files/document/Recommandations_de_sécurité_pour_un_système_d_IA_générative.pdf)
+
+### Vulnérabilités des plateformes
+
+La vulnérabilité CurXecute (CVE-2025-54135) a permis aux pirates d'ordonner à Cursor d'exécuter des commandes arbitraires sur la machine du développeur. Les plateformes de génération de code peuvent elles-mêmes présenter des failles exploitables.
+
+**Source:** [Kaspersky](https://www.kaspersky.fr/blog/vibe-coding-2025-risks/23307/)
+
+## 3. Fuite de données sensibles
+
+### Exposition de données confidentielles
+
+La fuite de données sensibles de l'entité doit être une menace à prendre en compte, quel que soit le cas d'usage du système d'IA générative. Les développeurs peuvent involontairement partager du code propriétaire ou des informations confidentielles avec les services d'IA.
+
+**Source:** [ANSSI](https://cyber.gouv.fr/sites/default/files/document/Recommandations_de_sécurité_pour_un_système_d_IA_générative.pdf)
+
+### Risques des services mutualisés
+
+L'ANSSI et le BSI soulignent les risques liés aux services mutualisés accessibles depuis Internet, où les données envoyées aux assistants de programmation peuvent être exposées.
+
+**Source:** [ANSSI - Assistants de programmation basés sur l'IA](https://cyber.gouv.fr/actualites/lanssi-et-le-bsi-publient-leurs-recommandations-de-securite-concernant-les-assistants-de)
+
+## 4. Propriété intellectuelle et droits d'auteur
+
+### Absence de protection juridique
+
+Une œuvre générée sans intervention humaine significative ne peut pas bénéficier de la protection par le droit d'auteur. En France, seule une personne physique peut être considérée comme auteur.
+
+**Source:** [Alexia.fr - Intelligence artificielle et droit d'auteur](https://www.alexia.fr/fiche/12455/intelligence-artificielle-et-droit-d-auteur-ou-en-sommes-nous-en-2025.htm)
+
+### Risques de contrefaçon
+
+L'exploitation des données générées par l'IA est soumise aux droits d'auteur des auteurs des données d'entraînement. Les entreprises utilisant du code généré par IA peuvent involontairement violer des droits de propriété intellectuelle.
+
+**Source:** [Village Justice - IA générative et propriété intellectuelle](https://www.village-justice.com/articles/generative-propriete-intellectuelle-les-defis-juridiques-les-perspectives,49889.html)
+
+### Impact sur les acquisitions
+
+Dans le cadre d'acquisitions, la présence de code généré par l'IA est scrutée avec des impacts potentiels sur la sécurité de la propriété intellectuelle et la viabilité commerciale.
+
+**Source:** [Louis-François Bouchard](https://www.louisbouchard.ca/blog-ia/risques-coder-ia)
+
+## 5. Dépendance et perte de compétences
+
+### Atrophie des compétences
+
+Le développement d'une dépendance excessive à l'IA entraîne une diminution de la capacité d'un développeur à coder de manière indépendante et à innover de manière créative.
+
+**Source:** [Louis-François Bouchard](https://www.louisbouchard.ca/blog-ia/risques-coder-ia)
+
+### Problèmes de maintenance
+
+Sans compréhension approfondie du code généré, les développeurs peuvent rencontrer des difficultés lors du débogage ou de la maintenance du code à long terme.
+
+## 6. Recommandations de l'ANSSI
+
+L'ANSSI et le BSI recommandent d'aborder ces outils avec prudence malgré leurs avantages certains, car ils induisent de nouveaux risques de sécurité à différents stades du développement.
+
+**Source:** [ANSSI](https://cyber.gouv.fr/actualites/lanssi-et-le-bsi-publient-leurs-recommandations-de-securite-concernant-les-assistants-de)
+
+## 7. Mesures de prévention
+
+Le niveau de risque peut être réduit par une combinaison de mesures :
+- Révision automatique du code avec des outils SAST
+- Intégration d'exigences de sécurité dans les invites système
+- Revues de code par des spécialistes
+- Formation des développeurs
+
+**Source:** [Kaspersky](https://www.kaspersky.fr/blog/vibe-coding-2025-risks/23307/)
 
 ---
 
-## 2. Propriété Intellectuelle (IP) et "Blanchiment" de Licences
-C'est le risque juridique et commercial le plus critique pour une entreprise.
+## Synthèse des sources principales
 
-* **Mémorisation et Régurgitation :** L'IA n'est pas "créative" au sens humain. Elle a mémorisé des extraits de code. Il est prouvé qu'elle peut reproduire *mot pour mot* des blocs de code issus de son entraînement, y compris du code sous licence.
-* **Contamination par Licence (Le risque GPL) :** C'est le scénario catastrophe.
-    1.  Un développeur utilise l'IA pour générer une fonction dans un logiciel **propriétaire** et **commercial**.
-    2.  L'IA a "copié" cette fonction d'un projet open-source sous licence **GPL** (une licence *copyleft*).
-    3.  Légalement, l'utilisation de ce code GPL "contamine" le logiciel commercial, qui pourrait être *légalement obligé* de publier l'intégralité de son propre code source sous cette même licence GPL.
-* **Absence d'Attribution :** L'IA ne cite jamais ses sources. Elle peut vous donner du code qui nécessite une attribution (comme les licences MIT ou Apache) sans vous le dire, vous plaçant en violation de licence.
-
----
-
-## 3. Atrophie des Compétences et Effet "Boîte Noire"
-C'est le risque à long terme pour la profession de développeur.
-
-* **Perte de la Pensée Critique :** En se contentant d'accepter les suggestions de l'IA (le "Tab, Tab, Tab"), les développeurs, en particulier les juniors, n'apprennent plus *pourquoi* une solution fonctionne. Ils n'apprennent plus les algorithmes, les structures de données ou les principes d'architecture.
-* **L'Effet "Boîte Noire" (Black Box) :** Les développeurs intègrent du code qu'ils ne comprennent pas entièrement. Lorsque ce code échoue (et il échouera), ils sont incapables de le **déboguer** efficacement, car ils n'ont jamais maîtrisé sa logique interne.
-* **Problème de Formation :** Comment former la prochaine génération d'architectes logiciels et de développeurs seniors si les juniors passent leur temps à "assembler" des blocs d'IA plutôt qu'à "résoudre" des problèmes fondamentaux ?
-
----
-
-## 4. Fuite de Données et Confidentialité de l'Entreprise
-C'est un risque opérationnel direct.
-
-* **Les Prompts sont des Données :** Tout ce que vous copiez-collez dans un prompt (ChatGPT, Copilot, etc.) est envoyé aux serveurs d'une entreprise tierce (OpenAI, Google, Microsoft).
-* **Fuite de Secrets :** Un développeur bloqué sur un bug peut être tenté de coller un large extrait de code. Cet extrait peut contenir :
-    * Des **clés API** en dur.
-    * Des **identifiants** de base de données.
-    * Des **algorithmes métier** propriétaires et stratégiques.
-    * Des **informations clients** confidentielles.
-* **Réutilisation pour l'Entraînement :** Par défaut, beaucoup de ces services se réservent le droit d'utiliser vos prompts pour ré-entraîner leurs modèles. Votre code secret pourrait se retrouver "mémorisé" par l'IA et être suggéré à un autre utilisateur, potentiellement un concurrent.
-    * *Note :* Ce risque peut être atténué avec des versions "Entreprise" ou des modèles auto-hébergés (on-premise), mais le risque demeure avec les versions publiques.
-
----
-
-## 5. Biais, Qualité et Performance
-L'IA n'optimise pas pour le "bon" code, elle optimise pour le code "le plus probable".
-
-* **Biais de Popularité :** L'IA suggérera la solution la plus *courante* sur GitHub, pas la plus *performante* ou la plus *moderne*. Elle peut suggérer une boucle `for` imbriquée (complexité O(n^2)) là où une simple `Map` (complexité O(n)) serait bien plus efficace.
-* **Code "Verbeux" ou Inélégant :** L'IA peut générer du code qui fonctionne mais qui est inutilement complexe, difficile à maintenir ou qui ne respecte pas les conventions de style (design patterns) de votre projet.
-* **Absence de Tests :** L'IA est notoirement faible pour générer des tests unitaires *pertinents*. Elle peut écrire des tests qui se contentent de valider le "chemin heureux" (happy path) sans couvrir les cas limites (edge cases), là où la plupart des bugs se cachent.
-
-### Conclusion
-
-L'IA est un **assistant** (un *copilote*), pas le *pilote*. Elle ne remplace pas l'expertise humaine.
-
-La règle d'or est simple : **Ne validez (commit) jamais du code que vous n'auriez pas été capable d'écrire vous-même et que vous ne comprenez pas à 100%.** La responsabilité finale du code reste, et restera, celle du développeur.
-
----
-
-## Sources
-
-1.  **Nom :** Lawgitech
-    * **Titre :** *Assistants IA cybersécurité : le code généré peut être dangereux* (Fait référence au rapport ANSSI/BSI)
-    * **Lien :** `https://lawgitech.eu/es/cybersecurite-et-assistants-ia-quand-le-code-ecrit-du-code-avec-des-failles/`
-
-2.  **Nom :** ECINews.fr
-    * **Titre :** *Le code généré par l'IA présente des risques pour la sécurité* (Mentionne l'étude Veracode)
-    * **Lien :** `https://www.ecinews.fr/fr/le-code-genere-par-lia-presente-des-risques-pour-la-securite/`
-
-3.  **Nom :** Developpez.com
-    * **Titre :** *85 % des développeurs s'inquiètent des risques de sécurité liés au fait de s'appuyer sur la GenAI... et de la perte de pensée critique*
-    * **Lien :** `https://intelligence-artificielle.developpez.com/actu/364966/85-pourcent-des-developpeurs-s-inquietent-des-risques-de-securite-lies-au-fait-de-s-appuyer-sur-la-GenAI-pour-developper-des-logiciels-et-de-la-perte-de-pensee-critique-due-a-l-utilisation-d-assistants-de-codage-IA/`
-
-4.  **Nom :** CIO-online
-    * **Titre :** *Avant de coder avec l'IA, il faut débuguer le risque juridique*
-    * **Lien :** `https://www.cio-online.com/actualites/lire-avant-de-coder-avec-l-ia-il-faut-debuguer-le-risque-juridique-15981.html`
-
-Souhaiteriez-vous que je détaille les bonnes pratiques pour *atténuer* ces risques (par exemple, comment utiliser l'IA de manière plus sûre) ?
+1. **EC News** - [Le code généré par l'IA présente des risques pour la sécurité](https://www.ecinews.fr/fr/le-code-genere-par-lia-presente-des-risques-pour-la-securite/)
+2. **Kaspersky** - [Risques liés à la sécurité du vibe coding](https://www.kaspersky.fr/blog/vibe-coding-2025-risks/23307/)
+3. **Louis-François Bouchard** - [Les Risques de Coder avec l'IA Générative](https://www.louisbouchard.ca/blog-ia/risques-coder-ia)
+4. **CNIL** - [Garantir la sécurité du développement d'un système d'IA](https://www.cnil.fr/fr/ia-garantir-la-securite-du-developpement)
+5. **ANSSI** - [Recommandations de sécurité pour un système d'IA générative](https://cyber.gouv.fr/sites/default/files/document/Recommandations_de_sécurité_pour_un_système_d_IA_générative.pdf)
+6. **ANSSI** - [Assistants de programmation basés sur l'IA](https://cyber.gouv.fr/actualites/lanssi-et-le-bsi-publient-leurs-recommandations-de-securite-concernant-les-assistants-de)
+7. **Alexia.fr** - [Intelligence artificielle et droit d'auteur](https://www.alexia.fr/fiche/12455/intelligence-artificielle-et-droit-d-auteur-ou-en-sommes-nous-en-2025.htm)
+8. **Village Justice** - [IA générative et propriété intellectuelle](https://www.village-justice.com/articles/generative-propriete-intellectuelle-les-defis-juridiques-les-perspectives,49889.html)
